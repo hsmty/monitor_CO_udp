@@ -1,4 +1,5 @@
-monitor_CO_udp
+UDP CO Monitor
 ==============
 
-Arduino CO monitor that transmits the information based on UDP protocol
+Arduino carbon monoxide monitor that transmits the information
+to an UDP server for logging.
