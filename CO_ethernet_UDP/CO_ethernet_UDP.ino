@@ -5,24 +5,26 @@
 #include <stdio.h>
 #include <string.h>
 
-#define PORT 2323
-#define WAIT 1000
-#define METER 0
-#define DEVICE 0
+#define PORT 2323 // The server's UDP port
+#define WAIT 1000 // microseconds to wait between readings
+#define METER 0 // The pin to use to check the CO sensor
+#define DEVICE 0 // The device's identificator
+
 // Enter a MAC address and IP address for your controller below.
-// The IP address will be dependent on your local network:
 byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 IPAddress server(66, 228, 50, 204);
+// The IP address will be dependent on your local network:
 IPAddress address(192, 168, 1, 201);
 
 EthernetUDP udp; //Ethernet UDP interface
 
-int lastRead = -1; // Used to only update when the reading changes
+// Used to only send the message when the reading changes
+int lastRead = -1; 
 
 void setup() 
 {
   Serial.begin(9600);
-  Serial.println("Requestin IP address...");
+  Serial.println("Requesting IP address...");
   // Request DHCP for address or use default
   if (Ethernet.begin(mac)) {
     Serial.print("Got IP address: ");
@@ -43,6 +45,8 @@ void loop()
   int reading = analogRead(METER);
 
   if (reading != lastRead) {
+    Serial.print("New reading: ");
+    Serial.println(reading, HEX);
     sprintf(command, "%03d:%03d:store", reading, DEVICE);
     udpSend(server, PORT, command);
     lastRead = reading;
